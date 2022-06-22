@@ -2,12 +2,15 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\FilmRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: FilmRepository::class)]
+#[ApiResource()]
 class Film
 {
     #[ORM\Id]
@@ -16,15 +19,19 @@ class Film
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['film-read', 'film-write', 'user-read'])]
     private $title;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['film-read', 'film-write', 'user-read'])]
     private $year;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['film-read', 'film-write', 'user-read'])]
     private $gender;
 
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'films')]
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'films', cascade: ['persist'])]
+    #[Groups(['film-read'])]
     private $users;
 
     public function __construct()

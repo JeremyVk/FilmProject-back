@@ -2,15 +2,19 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+#[ApiResource()]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -19,12 +23,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[Groups(['user-read', 'user-write', 'film-read'])]
     private $email;
 
     #[ORM\Column(type: 'string', length: 180, name: 'first_name')]
+    #[Groups(['user-read', 'user-write', 'film-read'])]
     private $firstName;
 
     #[ORM\Column(type: 'string', length: 180, name: 'last_name')]
+    #[Groups(['user-read', 'user-write', 'film-read'])]
     private $lastName;
 
     #[ORM\Column(type: 'json')]
@@ -34,6 +41,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $password;
 
     #[ORM\ManyToMany(targetEntity: Film::class, inversedBy: 'users', cascade: ['persist'])]
+    #[Groups(['user-read'])]
+    #[ApiSubresource()]
     private $films;
 
     public function __construct()
