@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\FilmRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\FilmRepository;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Api\UrlGeneratorInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: FilmRepository::class)]
@@ -16,6 +17,7 @@ class Film
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['user-read', 'film-read'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -30,9 +32,9 @@ class Film
     #[Groups(['film-read', 'film-write', 'user-read'])]
     private $gender;
 
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'films', cascade: ['persist'])]
-    #[Groups(['film-read'])]
-    private $users;
+    // #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'films', cascade: ['persist'])]
+    // #[Groups(['film-read', 'film-write'])]
+    // private $users;
 
     public function __construct()
     {
@@ -83,27 +85,27 @@ class Film
     /**
      * @return Collection<int, User>
      */
-    public function getUsers(): Collection
-    {
-        return $this->users;
-    }
+    // public function getUsers()
+    // {
+    //     return $this->users->getValues();
+    // }
 
-    public function addUser(User $user): self
-    {
-        if (!$this->users->contains($user)) {
-            $this->users[] = $user;
-            $user->addFilm($this);
-        }
+    // public function addUser(User $user): self
+    // {
+    //     if (!$this->users->contains($user)) {
+    //         $this->users[] = $user;
+    //         $user->addFilm($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeUser(User $user): self
-    {
-        if ($this->users->removeElement($user)) {
-            $user->removeFilm($this);
-        }
+    // public function removeUser(User $user): self
+    // {
+    //     if ($this->users->removeElement($user)) {
+    //         $user->removeFilm($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 }
